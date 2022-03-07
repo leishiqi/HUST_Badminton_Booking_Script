@@ -4,29 +4,30 @@ from selenium import webdriver
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 options = webdriver.ChromeOptions()
+# chrome根目录打开命令窗口，执行chrome.exe --remote-debugging-port=9222 --user-data-dir="your directory"，在新窗口登录华中科技大学账号，保持窗口常开
 options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 driver = webdriver.Chrome(executable_path='C:\Program Files\Google\Chrome\Application\chromedriver.exe',
                           options=options)
 driver.get(url="http://pecg.hust.edu.cn/cggl/front/yuyuexz")
 
-
+# 切换窗口
 def change_window():
     new_web = driver.window_handles[-1]
     driver.switch_to.window(new_web)
 
-
+# 切换日期
 def change_date():
     nextday = driver.find_element_by_xpath('/html/body/div[2]/div[2]/div[2]/div[1]/div[3]')
     nextday.click()
     time.sleep(0.1)
 
-
+# 选择时间段
 def select_duration(duration):
     select_time = driver.find_element_by_xpath('//*[@id="starttime"]/option[%d]' % duration)
     select_time.click()
     time.sleep(0.1)
 
-
+# 选择同伴
 def select_partner():
     partner = driver.find_element_by_xpath('/html/body/div[2]/div[2]/div[2]/form/table/tbody/tr[4]/td/input')
     partner.click()
@@ -35,7 +36,7 @@ def select_partner():
     partner.click()
     time.sleep(0.5)
 
-
+# 选择场地
 def select_zone(zone_num):
     row = zone_num // 5 + 3
     col = zone_num % 5 + 1
@@ -44,14 +45,14 @@ def select_zone(zone_num):
     zone.click()
     time.sleep(0.1)
 
-
+# 提交预定
 def submit_book():
     submit = driver.find_element_by_xpath('/html/body/div[2]/div[2]/div[2]/form/div[3]/input[3]')
     submit.click()
     time.sleep(0.1)
+    
 
-
-# 元素定位
+# 执行预定，此处改变时间段和场地号，注意提前排除不可预约场地
 def execute_booking(duration=7, zone=5):
     booking = driver.find_element_by_xpath('/html/body/div[2]/div/ul/li[1]/div[1]/div[2]/span/a')
     booking.click()
@@ -66,6 +67,7 @@ def execute_booking(duration=7, zone=5):
     select_zone(zone)
     submit_book()
     change_window()
+    # 确认缴费
     # charge = driver.find_element_by_xpath('/html/body/div[2]/div[2]/form/div/div[3]/input[2]')
     # charge.click()
     driver.quit()
@@ -75,6 +77,8 @@ if __name__ == '__main__':
     scheduler = BlockingScheduler(timezone='Asia/Shanghai')
     scheduler.add_job(execute_booking, 'date', run_date=datetime(2022, 3, 8, 8, 0, 0))
     scheduler.start()
+    
+# 场地编号与xpath对应关系
 # /html/body/div[2]/div[2]/div[2]/form/div[1]/table/tbody/tr[3]/td[2]:1
 # /html/body/div[2]/div[2]/div[2]/form/div[1]/table/tbody/tr[3]/td[3]:2
 # /html/body/div[2]/div[2]/div[2]/form/div[1]/table/tbody/tr[3]/td[4]:3
