@@ -97,9 +97,9 @@ def execute_booking(duration=3, zone=21):
     time.sleep(0.1)
     submit_book()
     change_window()
-    # 确认缴费
-    # charge = driver.find_element_by_xpath('/html/body/div[2]/div[2]/form/div/div[3]/input[2]')
-    # charge.click()
+    # 确认缴费，测试此脚本前注释下面两行代码
+    charge = driver.find_element_by_xpath('/html/body/div[2]/div[2]/form/div/div[3]/input[2]')
+    charge.click()
     driver.quit()
 
 
