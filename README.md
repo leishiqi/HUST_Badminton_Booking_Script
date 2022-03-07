@@ -1,4 +1,4 @@
-# badminton_booking_script_HUST
+# HUST_Badminton_Booking_Script
 华中科技大学专用羽毛球场地预约脚本。本简易脚本仅用作个人娱乐用途。
 # Request
 + chrome浏览器，下载对应版本的chromedriver至Application根目录，即必须与chrome.exe在同一文件夹
