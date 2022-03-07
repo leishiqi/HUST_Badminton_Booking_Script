@@ -9,6 +9,30 @@ options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 driver = webdriver.Chrome(executable_path='C:\Program Files\Google\Chrome\Application\chromedriver.exe',
                           options=options)
 driver.get(url="http://pecg.hust.edu.cn/cggl/front/yuyuexz")
+# 场地号与xpath序号对应关系
+zone_dict = {1: [3, 2],
+             2: [3, 3],
+             3: [3, 4],
+             4: [3, 5],
+             5: [3, 6],
+             21: [3, 7],
+             6: [4, 2],
+             7: [4, 3],
+             8: [4, 4],
+             9: [4, 5],
+             10: [4, 6],
+             11: [5, 2],
+             12: [5, 3],
+             13: [5, 4],
+             14: [5, 5],
+             15: [5, 6],
+             22: [5, 7],
+             16: [6, 2],
+             17: [6, 3],
+             18: [6, 4],
+             19: [6, 5],
+             20: [6, 6],
+             }
 
 
 # 切换窗口
@@ -42,7 +66,9 @@ def select_partner():
 
 
 # 选择场地
-def select_zone(row, col):
+def select_zone(num):
+    row = zone_dict[num][0]
+    col = zone_dict[num][1]
     zone = driver.find_element_by_xpath(
         '/html/body/div[2]/div[2]/div[2]/form/div[1]/table/tbody/tr[%d]/td[%d]' % (row, col))
     zone.click()
@@ -56,7 +82,7 @@ def submit_book():
 
 
 # 执行预定，此处改变时间段和场地号，注意提前排除不可预约场地
-def execute_booking(duration=3, row=3, col=6):
+def execute_booking(duration=3, zone=21):
     booking = driver.find_element_by_xpath('/html/body/div[2]/div/ul/li[1]/div[1]/div[2]/span/a')
     booking.click()
     time.sleep(0.1)
@@ -67,7 +93,7 @@ def execute_booking(duration=3, row=3, col=6):
     select_duration(duration)
     select_partner()
     change_window()
-    select_zone(row, col)
+    select_zone(zone)
     time.sleep(0.1)
     submit_book()
     change_window()
@@ -79,7 +105,7 @@ def execute_booking(duration=3, row=3, col=6):
 
 if __name__ == '__main__':
     scheduler = BlockingScheduler(timezone='Asia/Shanghai')
-    scheduler.add_job(execute_booking, 'date', run_date=datetime(2022, 3, 7, 16, 2, 10))
+    scheduler.add_job(execute_booking, 'date', run_date=datetime(2022, 3, 7, 16, 14, 0))
     scheduler.start()
 
 # 场地编号与xpath对应关系
