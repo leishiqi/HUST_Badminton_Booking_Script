@@ -10,10 +10,12 @@ driver = webdriver.Chrome(executable_path='C:\Program Files\Google\Chrome\Applic
                           options=options)
 driver.get(url="http://pecg.hust.edu.cn/cggl/front/yuyuexz")
 
+
 # 切换窗口
 def change_window():
     new_web = driver.window_handles[-1]
     driver.switch_to.window(new_web)
+
 
 # 切换日期
 def change_date():
@@ -21,11 +23,13 @@ def change_date():
     nextday.click()
     time.sleep(0.1)
 
+
 # 选择时间段
 def select_duration(duration):
     select_time = driver.find_element_by_xpath('//*[@id="starttime"]/option[%d]' % duration)
     select_time.click()
     time.sleep(0.1)
+
 
 # 选择同伴
 def select_partner():
@@ -36,24 +40,23 @@ def select_partner():
     partner.click()
     time.sleep(0.5)
 
+
 # 选择场地
-def select_zone(zone_num):
-    row = zone_num // 5 + 3
-    col = zone_num % 5 + 1
+def select_zone(row, col):
     zone = driver.find_element_by_xpath(
         '/html/body/div[2]/div[2]/div[2]/form/div[1]/table/tbody/tr[%d]/td[%d]' % (row, col))
     zone.click()
-    time.sleep(0.1)
+
 
 # 提交预定
 def submit_book():
     submit = driver.find_element_by_xpath('/html/body/div[2]/div[2]/div[2]/form/div[3]/input[3]')
     submit.click()
     time.sleep(0.1)
-    
+
 
 # 执行预定，此处改变时间段和场地号，注意提前排除不可预约场地
-def execute_booking(duration=7, zone=5):
+def execute_booking(duration=3, row=3, col=6):
     booking = driver.find_element_by_xpath('/html/body/div[2]/div/ul/li[1]/div[1]/div[2]/span/a')
     booking.click()
     time.sleep(0.1)
@@ -64,7 +67,8 @@ def execute_booking(duration=7, zone=5):
     select_duration(duration)
     select_partner()
     change_window()
-    select_zone(zone)
+    select_zone(row, col)
+    time.sleep(0.1)
     submit_book()
     change_window()
     # 确认缴费
@@ -75,9 +79,9 @@ def execute_booking(duration=7, zone=5):
 
 if __name__ == '__main__':
     scheduler = BlockingScheduler(timezone='Asia/Shanghai')
-    scheduler.add_job(execute_booking, 'date', run_date=datetime(2022, 3, 8, 8, 0, 0))
+    scheduler.add_job(execute_booking, 'date', run_date=datetime(2022, 3, 7, 16, 2, 10))
     scheduler.start()
-    
+
 # 场地编号与xpath对应关系
 # /html/body/div[2]/div[2]/div[2]/form/div[1]/table/tbody/tr[3]/td[2]:1
 # /html/body/div[2]/div[2]/div[2]/form/div[1]/table/tbody/tr[3]/td[3]:2
